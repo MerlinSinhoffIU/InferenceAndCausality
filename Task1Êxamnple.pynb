@@ -1,0 +1,24 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import beta
+
+x = np.linspace(0, 1, 200)
+
+# Priors
+prior_a = beta.pdf(x, 1, 1)
+prior_b = beta.pdf(x, 10, 10)
+
+# Posteriors after observing 7 heads out of 10
+post_a = beta.pdf(x, 8, 4)
+post_b = beta.pdf(x, 17, 13)
+
+plt.figure(figsize=(10,6))
+plt.plot(x, prior_a, 'k--', label='Prior A: Beta(1,1)')
+plt.plot(x, prior_b, 'k-', label='Prior B: Beta(10,10)')
+plt.plot(x, post_a, 'r--', label='Posterior A: Beta(8,4)')
+plt.plot(x, post_b, 'r-', label='Posterior B: Beta(17,13)')
+plt.xlabel(r'$\theta$')
+plt.ylabel('Density')
+plt.legend()
+plt.title('Impact of Prior on Posterior (Coin Toss Example)')
+plt.show()
