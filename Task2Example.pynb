@@ -1,0 +1,11 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+G = nx.DiGraph()
+edges = [('M','T'), ('M','S'), ('T','S')]
+G.add_edges_from(edges)
+
+pos = {'M': (-1,0), 'T': (0,0), 'S': (1,0)}
+nx.draw(G, pos, with_labels=True, node_size=2000, node_color="lightblue", arrowsize=20)
+plt.title("Causal DAG: Mood (M) confounding Time (T) and Satisfaction (S)")
+plt.show()
