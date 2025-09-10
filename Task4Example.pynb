@@ -1,0 +1,49 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Define conditional probabilities
+# Format: (X, G): P(Y=1 | X, G)
+cond_probs = {
+    (1, 1): 0.30,
+    (0, 1): 0.15,
+    (1, 0): 0.10,
+    (0, 0): 0.05
+}
+
+# Marginal probabilities for G
+P_G = {
+    1: 0.20,
+    0: 0.80
+}
+
+# Calculate P(Y=1 | do(X=1))
+P_Y_do_X1 = (
+    cond_probs[(1, 1)] * P_G[1] +
+    cond_probs[(1, 0)] * P_G[0]
+)
+
+# Calculate P(Y=1 | do(X=0))
+P_Y_do_X0 = (
+    cond_probs[(0, 1)] * P_G[1] +
+    cond_probs[(0, 0)] * P_G[0]
+)
+
+# Risk difference
+causal_effect = P_Y_do_X1 - P_Y_do_X0
+
+# Prepare results for display
+results = pd.DataFrame({
+    "Scenario": ["do(X=1)", "do(X=0)", "Risk Difference"],
+    "P(Y=1)": [P_Y_do_X1, P_Y_do_X0, causal_effect]
+})
+
+# Plot the results
+plt.figure(figsize=(6, 4))
+plt.bar(results["Scenario"], results["P(Y=1)"], color=["#2c7fb8", "#41b6c4", "#7fcdbb"])
+plt.title("Estimated Causal Effect of Smoking on Lung Cancer")
+plt.ylabel("P(Y = 1)")
+plt.ylim(0, max(results["P(Y=1)"]) + 0.05)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+
+results, plot_path
