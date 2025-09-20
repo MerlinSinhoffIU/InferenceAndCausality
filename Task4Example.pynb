@@ -1,49 +1,54 @@
-import pandas as pd
+# Import necessary packages
+import networkx as nx
 import matplotlib.pyplot as plt
 
-# Define conditional probabilities
-# Format: (X, G): P(Y=1 | X, G)
-cond_probs = {
-    (1, 1): 0.30,
-    (0, 1): 0.15,
-    (1, 0): 0.10,
-    (0, 0): 0.05
+# Define the directed graph
+G = nx.DiGraph()
+
+# Add nodes with abbreviations
+nodes = {
+    'G': 'Genetic Predisposition (G)',
+    'S': 'Socioeconomic Status (S)',
+    'E': 'Environmental Exposure (E)',
+    'X': 'Smoking (X)',
+    'Y': 'Lung Cancer (Y)'
+}
+G.add_nodes_from(nodes.keys())
+
+# Add directed edges representing causal influences
+edges = [
+    ('G', 'X'),
+    ('G', 'Y'),
+    ('S', 'X'),
+    ('S', 'Y'),
+    ('E', 'X'),
+    ('E', 'Y'),
+    ('X', 'Y')
+]
+G.add_edges_from(edges)
+
+# Define node positions for plotting
+pos = {
+    'G': (-1, 1),
+    'S': (-1, 0),
+    'E': (-1, -1),
+    'X': (0, 0),
+    'Y': (1, 0)
 }
 
-# Marginal probabilities for G
-P_G = {
-    1: 0.20,
-    0: 0.80
-}
+# Create the plot
+plt.figure(figsize=(10, 6))
+nx.draw(G, pos, with_labels=False, node_size=3000, node_color='lightblue', arrows=True)
 
-# Calculate P(Y=1 | do(X=1))
-P_Y_do_X1 = (
-    cond_probs[(1, 1)] * P_G[1] +
-    cond_probs[(1, 0)] * P_G[0]
-)
+# Draw variable names inside the nodes (G, S, E, X, Y)
+nx.draw_networkx_labels(G, pos, labels={n: n for n in G.nodes()}, font_size=10, font_weight='bold')
 
-# Calculate P(Y=1 | do(X=0))
-P_Y_do_X0 = (
-    cond_probs[(0, 1)] * P_G[1] +
-    cond_probs[(0, 0)] * P_G[0]
-)
+# Add descriptive labels beneath each node
+offset = -0.15  # Vertical offset for text placement
+for node, (x, y) in pos.items():
+    plt.text(x, y + offset, nodes[node], fontsize=9, ha='center')
 
-# Risk difference
-causal_effect = P_Y_do_X1 - P_Y_do_X0
-
-# Prepare results for display
-results = pd.DataFrame({
-    "Scenario": ["do(X=1)", "do(X=0)", "Risk Difference"],
-    "P(Y=1)": [P_Y_do_X1, P_Y_do_X0, causal_effect]
-})
-
-# Plot the results
-plt.figure(figsize=(6, 4))
-plt.bar(results["Scenario"], results["P(Y=1)"], color=["#2c7fb8", "#41b6c4", "#7fcdbb"])
-plt.title("Estimated Causal Effect of Smoking on Lung Cancer")
-plt.ylabel("P(Y = 1)")
-plt.ylim(0, max(results["P(Y=1)"]) + 0.05)
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+# Final plot settings
+plt.title("Causal DAG: Smoking and Lung Cancer with Confounders")
+plt.axis('off')
 plt.tight_layout()
-
-results, plot_path
