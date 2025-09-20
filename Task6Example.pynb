@@ -1,0 +1,26 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+
+# Create a directed graph
+G = nx.DiGraph()
+
+# Define the nodes and the edges and their positions
+G.add_nodes_from(["X", "Y", "Z"])
+G.add_edges_from([("Z", "X"), ("Z", "Y"), ("X", "Y")])
+
+pos = {
+    "Z": (0, 1),
+    "X": (1, 0),
+    "Y": (2, 1)
+}
+
+# Draw the graph
+plt.figure(figsize=(6, 4))
+nx.draw_networkx_nodes(G, pos, node_size=2500, node_color="#c6dbef")
+nx.draw_networkx_edges(G, pos, arrowstyle='-|>', arrowsize=25, edge_color='gray', width=2)
+nx.draw_networkx_labels(G, pos, labels={"X": "Exercise (X)", "Y": "Weight Loss (Y)", "Z": "Diet (Z)"}, font_size=10)
+
+plt.title("Causal Graph: Exercise → Weight Loss with Confounder Diet", fontsize=12)
+plt.axis('off')
+plt.tight_layout()
+plt.show()
