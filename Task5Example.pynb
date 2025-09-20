@@ -1,0 +1,65 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Create a directed graph
+G = nx.DiGraph()
+
+# Define all nodes
+nodes = {
+    "T": "Educational Program (T)",
+    "Y": "Academic Performance (Y)",
+    "M": "Student Motivation (M)",
+    "C": "Attendance (C)",
+    "A0": "Baseline Academic Ability (A₀)",
+    "S": "Socioeconomic Status (S)",
+    "P": "Parental Involvement (P)",
+    "F": "School Funding (F)",
+    "Q": "Teacher Quality (Q)"
+}
+
+# Add edges representing causal relationships
+edges = [
+    ("T", "M"),      # T -> M (mediator)
+    ("M", "Y"),      # M -> Y (mediator path)
+    ("T", "C"),      # T -> C (collider)
+    ("Y", "C"),      # Y -> C (collider)
+    ("A0", "T"),     # A₀ -> T (confounder)
+    ("A0", "Y"),     # A₀ -> Y (confounder)
+    ("S", "T"),      # S -> T (confounder)
+    ("S", "Y"),      # S -> Y (confounder)
+    ("P", "T"),      # P -> T (confounder)
+    ("P", "Y"),      # P -> Y (confounder)
+    ("F", "T"),      # F -> T (confounder)
+    ("F", "Y"),      # F -> Y (confounder)
+    ("Q", "T"),      # Q -> T (confounder)
+    ("Q", "Y")       # Q -> Y (confounder)
+]
+
+# Add all nodes and edges
+G.add_nodes_from(nodes.keys())
+G.add_edges_from(edges)
+
+# Positioning
+pos = {
+    "S": (-3, 2),
+    "P": (-2, 2),
+    "A0": (-1, 2),
+    "F": (0, 2),
+    "Q": (1, 2),
+    "T": (0, 1),
+    "M": (0, 0),
+    "Y": (2, 1),
+    "C": (1, -0.5)
+}
+
+# Create the plot
+plt.figure(figsize=(12, 7))
+nx.draw(G, pos, with_labels=False, node_color="lightblue", node_size=2000, arrowsize=20)
+
+# Add node labels under the nodes
+for node, (x, y) in pos.items():
+    plt.text(x, y - 0.25, nodes[node], ha='center', fontsize=9)
+
+plt.title("Causal DAG: Educational Program → Academic Performance with Confounders, Mediator, and Collider", fontsize=12)
+plt.axis('off')
+plt.tight_layout()
